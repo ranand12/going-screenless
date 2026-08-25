@@ -2,33 +2,28 @@
 
 An experiment in minimizing screen time by replacing phone-based workflows with a voice-controlled AI agent running on a Raspberry Pi.
 
-> Every now and then, I think we all need to do a project purely for the sake of it. No outcome, no ROI—just because you can.
-
-## Why?
-
-There's actual science behind why going screenless matters. When you eliminate screens and let your brain experience boredom, you activate the **Default Mode Network (DMN)**. That idle state is critical for forming deep neural connections and creative problem-solving. Breaking screen addiction is brutally hard, which is why I needed a systemic approach rather than pure willpower.
-
-More on the science: [Brain & Consumption Impact](https://ranand12.github.io/brain-consumption-impact/)
-
-![Default Mode Network](images/dmn.png)
-
-## What Didn't Work
-
-I tried all the usual tricks:
-- Turning my phone screen to **grayscale + assistive access**
-- Locking the phone in a **physical box** (ySky)
-- **NFC Tags** to screen-lock ([Foqos](https://www.foqos.app/))
-- Moving the TV to the basement so watching requires a deliberate trek
-
-Each helped to some extent, but the pull of the screen is too strong when almost every daily workflow runs through it. So the plan became: swap my daily workflows for a **pure audio interface**.
-
-When I really thought about it, my phone usage came down to three things: **YouTube**, **WhatsApp**, and **reading articles on Safari** (the 80%). I never actually liked reading on a screen — I much prefer my Kindle. So the question became: what if I could handle my personal tech usage with minimal screen time?
-
-## The Setup
-
-A Raspberry Pi connected to a microphone, running **Gemini Live** for real-time conversational voice input, which delegates tool-based tasks to a brain agent ([Hermes Agent](https://github.com/nousresearch/hermes-agent)).
-
 ![Architecture](images/architecture.png)
+
+## Architecture
+
+```
+[You] ──voice──▶ [Shure MV7 USB Mic] ──▶ [Pi running voice agent]
+                                                │
+                                    ┌───────────┴───────────┐
+                                    │                       │
+                              [Gemini Live API]      [Hermes Agent API]
+                              (native audio I/O)     (brain + tools)
+                              via WebSocket           │
+                                    │          ┌──────┼──────┐
+                                    │          │      │      │
+                                    │     [Web Search] [Memory] [Skills]
+                                    │          │      │      │
+                              [3.5mm jack] [Kindle] [WhatsApp] [Code Exec]
+                                    │     (email)  (bridge)
+                              [Bose Speaker]
+                                    │
+                              [You] ◀──voice──
+```
 
 ### Hardware
 | Component | Role |
@@ -52,27 +47,6 @@ A Raspberry Pi connected to a microphone, running **Gemini Live** for real-time 
 - **Hybrid architecture**: Gemini Live handles conversational voice directly. Tool-based tasks (research, messaging, media) are delegated to Hermes Agent via function calling.
 - **Fire-and-forget pattern**: Tasks that deliver results elsewhere (Kindle, email) return instantly with confirmation. Tasks where the user needs the answer spoken back wait for the result.
 - **Single-turn tool calls**: Speech acknowledgment and tool call happen in the same Gemini turn. Splitting them across turns causes the tool call to silently fail (see [Lessons Learned](#lessons-learned)).
-
-## Architecture Deep Dive
-
-```
-[You] ──voice──▶ [Shure MV7 USB Mic] ──▶ [Pi running voice agent]
-                                                │
-                                    ┌───────────┴───────────┐
-                                    │                       │
-                              [Gemini Live API]      [Hermes Agent API]
-                              (native audio I/O)     (brain + tools)
-                              via WebSocket           │
-                                    │          ┌──────┼──────┐
-                                    │          │      │      │
-                                    │     [Web Search] [Memory] [Skills]
-                                    │          │      │      │
-                              [3.5mm jack] [Kindle] [WhatsApp] [Code Exec]
-                                    │     (email)  (bridge)
-                              [Bose Speaker]
-                                    │
-                              [You] ◀──voice──
-```
 
 ### Voice Loop Lifecycle
 
@@ -120,6 +94,30 @@ These are simplified reference implementations showing the architecture patterns
 
 ### Kindle Integration
 - Amazon Kindle rejects email where content is in the body — must be a **file attachment** with subject "convert".
+
+---
+
+## Why?
+
+> Every now and then, I think we all need to do a project purely for the sake of it. No outcome, no ROI—just because you can.
+
+There's actual science behind why going screenless matters. When you eliminate screens and let your brain experience boredom, you activate the **Default Mode Network (DMN)**. That idle state is critical for forming deep neural connections and creative problem-solving. Breaking screen addiction is brutally hard, which is why I needed a systemic approach rather than pure willpower.
+
+More on the science: [Brain & Consumption Impact](https://ranand12.github.io/brain-consumption-impact/)
+
+![Default Mode Network](images/dmn.png)
+
+## What Didn't Work
+
+I tried all the usual tricks:
+- Turning my phone screen to **grayscale + assistive access**
+- Locking the phone in a **physical box** (ySky)
+- **NFC Tags** to screen-lock ([Foqos](https://www.foqos.app/))
+- Moving the TV to the basement so watching requires a deliberate trek
+
+Each helped to some extent, but the pull of the screen is too strong when almost every daily workflow runs through it. So the plan became: swap my daily workflows for a **pure audio interface**.
+
+When I really thought about it, my phone usage came down to three things: **YouTube**, **WhatsApp**, and **reading articles on Safari** (the 80%). I never actually liked reading on a screen — I much prefer my Kindle. So the question became: what if I could handle my personal tech usage with minimal screen time?
 
 ## Why Hermes Agent?
 
