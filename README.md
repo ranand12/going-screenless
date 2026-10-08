@@ -134,6 +134,8 @@ More details: [Hermes Agent Docs](https://hermes-agent.nousresearch.com/docs/)
 
 I will strictly **not recommend** trying this in an enterprise or production scenario. This is good for personal experimentation only. Running an agent like Hermes requires proper security considerations — the self-improving skills sound impressive, but an agent that writes its own procedures [needs human review](https://www.clawbot.blog/blog/hermes-agent-framework-self-aware-ai-agents-that-improve-without-you/) before those procedures run in anything serious.
 
+This repository and its contents are provided for illustration and educational purposes only as example code. This is not an official Google product or officially supported Google Cloud project. This code is provided as-is for demonstration purposes and is NOT intended or supported for production workloads. The views, code, and opinions expressed in this repository are those of the author(s) and do not necessarily reflect the position, opinions, or official policy of Google LLC or Google Cloud Platform.
+
 ## A Word of Caution
 
 If you think this is totally absurd, I completely understand. But hey, at least you stuck with me to the end and I appreciate that :)
